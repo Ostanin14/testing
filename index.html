@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="LayerTech — магазин 3D-моделей и индивидуального 3D-моделирования.">
+<title>LayerTech — 3D моделирование</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header><div class="nav">
+<div class="logo">Layer<span>Tech</span></div>
+<nav><button onclick="showPage('home')">Главная</button><button onclick="showPage('catalog')">Каталог</button><button onclick="showPage('custom')">На заказ</button><button onclick="showPage('orders')">Мои заказы</button></nav>
+<div class="actions"><button class="navbtn" onclick="openCart()">🛒 <span id="cartCount">0</span></button><button class="primary" id="authBtn" onclick="openAuth()">Войти</button></div>
+</div></header>
+
+<main>
+<section id="home">
+<div class="hero"><div><div class="eyebrow">3D MODELING • DESIGN • CUSTOM</div><h1>Идея → 3D-модель</h1><p>Готовые модели для скачивания и индивидуальное 3D-моделирование под ваши задачи. Выберите модель в каталоге или отправьте собственное техническое задание.</p><div class="contact"><a href="https://vk.com/mextazzyy" target="_blank">VK · @mextazzyy</a><a href="https://t.me/mextazzyy" target="_blank">Telegram · @mextazzyy</a></div></div>
+<div class="hero-card"><div class="grid"></div><div class="shape"></div></div></div>
+<div class="section-head"><h2>Как это работает</h2></div><div class="info-grid"><div class="info"><b>01 · Выбираете</b><p>Готовую модель в каталоге или создаёте индивидуальный заказ.</p></div><div class="info"><b>02 · Оформляете</b><p>Добавляете товары в корзину или отправляете описание будущей модели.</p></div><div class="info"><b>03 · Получаете</b><p>Следите за статусом заказа в личном кабинете и получаете результат.</p></div></div>
+</section>
+
+<section id="catalog" style="display:none"><div class="section-head"><h2>Каталог 3D-моделей</h2><span class="muted" id="productCount"></span></div><div class="toolbar"><input id="search" placeholder="Поиск модели..." oninput="renderProducts()"><select id="category" onchange="renderProducts()"><option value="">Все категории</option><option>Персонажи</option><option>Предметы</option><option>Декор</option><option>Техника</option></select></div><div class="products" id="products"></div></section>
+
+<section id="custom" style="display:none"><div class="section-head"><h2>Индивидуальная модель</h2></div><div class="modal-box" style="width:100%;max-width:none"><p class="muted">Опишите задачу — администратор примет заказ и установит статус. Можно указать размеры, формат, референсы и любые дополнительные требования.</p><div class="form-grid"><div class="field"><label>Название проекта</label><input id="customName" placeholder="Например: корпус для устройства"></div><div class="field"><label>Бюджет, ₽</label><input id="customBudget" type="number" placeholder="5000"></div><div class="field full"><label>Описание</label><textarea id="customDesc" rows="7" placeholder="Что нужно смоделировать, размеры, материалы, формат файла и т.д."></textarea></div><div class="field full"><label>Ссылка на референс (необязательно)</label><input id="customRef" placeholder="https://..."></div></div><div class="modal-actions"><button class="primary" onclick="createCustomOrder()">Отправить заказ</button></div></div></section>
+
+<section id="orders" style="display:none"><div class="section-head"><h2>Мои заказы</h2></div><div id="ordersList"></div></section>
+
+<section id="admin" class="admin"><div class="section-head"><h2>Админ-панель</h2><span class="muted">Moderation3D</span></div><div class="admin-nav"><button class="secondary active" onclick="adminTab('ordersAdmin',this)">Заказы</button><button class="secondary" onclick="adminTab('productsAdmin',this)">Товары</button><button class="secondary" onclick="adminTab('usersAdmin',this)">Пользователи</button></div><div id="ordersAdmin"></div><div id="productsAdmin" style="display:none"></div><div id="usersAdmin" style="display:none"></div></section>
+</main>
+<footer>© 2026 LayerTech · 3D-моделирование · <a href="https://vk.com/mextazzyy" target="_blank" style="color:#fff">VK</a> · <a href="https://t.me/mextazzyy" target="_blank" style="color:#fff">Telegram</a></footer>
+
+<div class="drawer" id="cart"><div class="row"><h2>Корзина</h2><button class="navbtn" onclick="closeCart()">✕</button></div><div id="cartItems"></div><div class="cart-total">Итого: <span id="cartTotal">0</span> ₽</div><button class="primary" style="width:100%" onclick="checkout()">Оформить заказ</button></div>
+
+<div class="modal" id="authModal"><div class="modal-box"><div class="row"><h2 id="authTitle">Вход</h2><button class="navbtn" onclick="closeModal('authModal')">✕</button></div><div class="field"><label>Логин / email</label><input id="loginInput"></div><div class="field" style="margin-top:12px"><label>Пароль</label><input id="passInput" type="password"></div><div class="modal-actions"><button class="secondary" onclick="toggleAuth()">Регистрация</button><button class="primary" onclick="submitAuth()">Продолжить</button></div></div></div>
+<div class="modal" id="productModal"><div class="modal-box"><div class="row"><h2 id="productModalTitle">Добавить товар</h2><button class="navbtn" onclick="closeModal('productModal')">✕</button></div><div class="form-grid"><div class="field"><label>Название</label><input id="pName"></div><div class="field"><label>Категория</label><input id="pCategory" placeholder="Персонажи"></div><div class="field"><label>Цена, ₽</label><input id="pPrice" type="number"></div><div class="field"><label>Формат</label><input id="pFormat" placeholder="STL, OBJ"></div><div class="field full"><label>Фото / URL изображения</label><input id="pImage" placeholder="https://..."></div><div class="field full"><label>Описание</label><textarea id="pDesc" rows="5"></textarea></div></div><div class="modal-actions"><button class="primary" onclick="saveProduct()">Сохранить</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+
+<script src="assets/app.js"></script>
+</body>
+</html>
